@@ -59,3 +59,30 @@ function ophirofoxDateRange(published_time) {
             return 9; // Dans toutes les archives
     }
 }
+
+/**
+ * Premiers mots significatifs du chemin d'une URL d'article, sans les identifiants
+ * (…-mortifere_6783475_3232.html, …-20260925, …-5a440ca0-b1a6-11f1-926d-8837bd37b66e).
+ * L'URL garde souvent le titre d'origine, celui d'Europresse, quand le site a changé le sien.
+ * @param {string} url
+ * @returns {string} vide si l'URL n'en contient pas assez
+ */
+function ophirofoxUrlKeywords(url) {
+    let pathname = "";
+    try {
+        pathname = new URL(url).pathname;
+    } catch (_) {
+        return "";
+    }
+    const slug = pathname.split("/").filter(Boolean).pop() || "";
+    const words = slug
+        .replace(/\.html?$/, "")
+        .replace(/-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/, "")
+        .replace(/(_\d+)+$|-\d{6,}$/, "")
+        .split("-")
+        // Mots courts et articles collés (« leglise » pour « l'Église ») : Europresse ne les trouve pas.
+        // Une requête courte est aussi plus sûre : un mot absent du titre suffit à ne rien trouver.
+        .filter(word => word.length > 3 && !/^[ld][aeiouy]/.test(word) && !/^\d+$/.test(word))
+        .slice(0, 5);
+    return words.length >= 3 ? words.join(" ") : "";
+}

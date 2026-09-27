@@ -48,6 +48,8 @@ async function loadRead(){
     const path = window.location.pathname;
     const { search_terms, published_time } = await consumeReadRequest();
     if (!search_terms) return;
+    // Nouvelle recherche : oublier les essais de la précédente (voir le repli sans résultat)
+    sessionStorage.removeItem("ophirofox_title_query");
     
     const keywords = ophirofoxSearchKeywords(search_terms);
     const keyword_field_id = path.startsWith("/Search/Result") ? "NativeQuery" : "Keywords";
@@ -116,7 +118,17 @@ async function onLoad() {
             } else if (numberOfResul === '0') {
                 const query = document.querySelector('#Keywords');
                 if (query.value.startsWith('TIT_HEAD=')) {
-                    query.value = query.value.replace('TIT_HEAD=', 'TEXT=');
+                    // Le titre a pu changer depuis la publication : on essaie d'abord les mots de
+                    // l'URL de l'article, qui gardent souvent le titre d'origine, puis le texte intégral
+                    const url_keywords = ophirofoxUrlKeywords(originTracking?.origin_url);
+                    const title_query = sessionStorage.getItem("ophirofox_title_query");
+                    if (url_keywords && !title_query) {
+                        sessionStorage.setItem("ophirofox_title_query", query.value);
+                        query.value = 'TIT_HEAD=' + url_keywords;
+                    } else {
+                        query.value = (title_query || query.value).replace('TIT_HEAD=', 'TEXT=');
+                        sessionStorage.removeItem("ophirofox_title_query");
+                    }
                     const butonSearch = document.querySelector('#btnSearch');
                     butonSearch.click();
                 }
