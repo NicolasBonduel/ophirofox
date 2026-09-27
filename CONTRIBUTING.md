@@ -66,7 +66,7 @@ Le mode « Lire ici » complète l'article directement dans la page. Il ne fonct
 
 - Créer `ophirofox/inline/mon-nouveau-site-de-presse.js`, qui décrit le site avec `ophirofoxInlineSite` (voir `inline/lefigaro.js` pour un exemple simple) : sélecteurs du titre, du texte, des paragraphes, des intertitres et du paywall, éditions Europresse à privilégier. La liste complète est documentée dans `inline/site.js`.
 
-- Si le site ne suit pas ce schéma, décrire ce qui diffère dans le même fichier : `uncover` quand le paywall recouvre la fin du texte (voir `inline/lemonde.js`), ou `override` pour remplacer n'importe quelle étape.
+- Si le site ne suit pas ce schéma, décrire ce qui diffère dans le même fichier : `skip` pour les paragraphes qui ne font pas partie de l'article (liens « Lire aussi », voir `inline/ouestfrance.js`), `uncover` quand un fondu ou le paywall recouvre la fin du texte (voir `inline/lemonde.js`), ou `override` pour remplacer n'importe quelle étape.
 
 - Pour retirer le mode d'un site, supprimer son fichier dans `inline/` et ces lignes du manifeste.
 

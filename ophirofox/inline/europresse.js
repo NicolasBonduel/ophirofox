@@ -154,6 +154,15 @@ function ophirofoxInlineParseResults(doc, baseUrl) {
     return results;
 }
 
+// Part des mots de la requête présents dans le titre du résultat : pour une requête courte
+// (mots de l'URL), plus parlant que la similarité, qui pénalise l'écart de longueur
+function ophirofoxInlineWordCoverage(query, resultTitle) {
+    const words = ophirofoxInlineNormalize(query).split(/[^a-z0-9]+/).filter(Boolean);
+    const title = ophirofoxInlineNormalize(resultTitle).replace(/[^a-z0-9]+/g, " ");
+    if (words.length === 0) return 0;
+    return words.filter(word => title.includes(word)).length / words.length;
+}
+
 // Europresse préfixe les titres par les auteurs (« Adam Baczko et … Penser la guerre… ») :
 // un résultat qui contient le titre de la page est considéré comme exact.
 function ophirofoxInlineTitleScore(pageTitle, resultTitle) {
@@ -210,14 +219,16 @@ async function ophirofoxInlineSearchForm(config) {
 
 /**
  * Recherche l'article sur Europresse et classe les résultats
- * @param {string} field - "TIT_HEAD=" (titre et chapeau) ou "TEXT=" (texte intégral)
+ * @param {{field:string, match:string}} step - field : "TIT_HEAD=" (titre et chapeau) ou "TEXT="
+ * (texte intégral) ; match : "title" (similarité avec le titre de la page) ou "words" (part
+ * des mots clés présents dans le titre du résultat)
  * @param {{keywords:string, publishedTime:string, title:string, sources:string[]}} article
- * keywords et publishedTime : ceux du lien « Lire sur Europresse » ; sources : éditions à
- * privilégier, par ordre de préférence (début du nom de la source)
+ * keywords : mots clés de la recherche ; publishedTime : date du lien « Lire sur Europresse » ;
+ * sources : éditions à privilégier, par ordre de préférence (début du nom de la source)
  * @param {{proxyBase:string, sessionPath:string}} config
  * @returns {Promise<{title:string, source:string, href:string, score:number}[]>}
  */
-async function ophirofoxInlineSearch(field, { keywords, publishedTime, title, sources = [] }, config) {
+async function ophirofoxInlineSearch({ field, match }, { keywords, publishedTime, title, sources = [] }, config) {
     const { page, form } = await ophirofoxInlineSearchForm(config);
 
     const fields = ophirofoxInlineFormFields(form);
@@ -242,7 +253,10 @@ async function ophirofoxInlineSearch(field, { keywords, publishedTime, title, so
         const source = ophirofoxInlineNormalize(result.source);
         const rank = preferred.findIndex(name => source.startsWith(name));
         const bonus = rank === -1 ? 0 : 0.1 * (1 - rank / preferred.length);
-        return { ...result, score: ophirofoxInlineTitleScore(title, result.title) + bonus };
+        const score = match === "words" ?
+            ophirofoxInlineWordCoverage(keywords, result.title) :
+            ophirofoxInlineTitleScore(title, result.title);
+        return { ...result, score: score + bonus };
     });
     results.sort((a, b) => b.score - a.score);
     ophirofoxInlineDebug(field, "résultats", results);

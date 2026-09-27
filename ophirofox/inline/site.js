@@ -11,6 +11,8 @@
  * @param {string} site.content - conteneur du texte de l'article
  * @param {string} site.paragraph - paragraphes du texte (aussi utilisé pour ceux ajoutés)
  * @param {string} site.heading - intertitres du texte
+ * @param {RegExp} [site.skip] - paragraphes qui ne font pas partie de l'article (liens
+ * « Lire aussi »…), ignorés sur la page comme dans le texte d'Europresse
  * @param {{tag:string, className:string}} site.newHeading - intertitre ajouté quand la page
  * n'en a pas pour servir de modèle
  * @param {string} site.paywall - éléments du paywall, retirés une fois le texte complété
@@ -45,7 +47,10 @@ function ophirofoxInlineSite(site) {
 
         captions: () => Array.from(document.querySelectorAll("figcaption")).map(elem => elem.textContent),
 
-        visibleParagraphs: () => Array.from(blocks()).map(elem => elem.textContent),
+        ignore: text => !!site.skip && site.skip.test(text.trim()),
+
+        visibleParagraphs: () => Array.from(blocks()).map(elem => elem.textContent)
+            .filter(text => !adapter.ignore(text)),
 
         insertionPoint() {
             const all = blocks();

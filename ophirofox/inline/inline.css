@@ -50,8 +50,9 @@
     cursor: pointer;
 }
 
-/* Fondu du paywall retiré pendant le chargement (Le Figaro) */
-.ophirofox-inline-uncovered::before {
+/* Fondu du paywall retiré pendant le chargement (Le Figaro, Ouest-France) */
+.ophirofox-inline-uncovered::before,
+.ophirofox-inline-uncovered::after {
     display: none !important;
 }
 

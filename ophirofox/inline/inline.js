@@ -3,17 +3,40 @@
 // Rien n'est demandé à Europresse avant le clic : chaque recherche et chaque article
 // consulté comptent comme une consultation sur le compte de l'établissement.
 
-// Score de titre minimal pour ouvrir un résultat. En texte intégral, le titre d'Europresse
-// peut être reformulé : on est plus tolérant, la vérification du texte tranche ensuite.
-// Deux titres français sans rapport obtiennent déjà environ 0,35.
-const OPHIROFOX_INLINE_MIN_SCORE = { "TIT_HEAD=": 0.55, "TEXT=": 0.45 };
-
 // Europresse reprend les articles avec un délai : un article récent peut ne pas y être encore
 const OPHIROFOX_INLINE_RECENT_DAYS = 2;
 
 // Chaque clic (« Lire ici », puis « Élargir la recherche ») fait au plus une recherche et ouvre
-// au plus un article : titre et chapeau d'abord, puis texte intégral, puis son résultat suivant
-const OPHIROFOX_INLINE_STEPS = ["TIT_HEAD=", "TEXT=", "TEXT="];
+// au plus un article :
+// 1. titre et chapeau, avec les mots clés d'Ophirofox (titre actuel de la page)
+// 2. titre et chapeau, avec quelques mots de l'URL : elle garde souvent le titre d'origine,
+//    celui d'Europresse, quand le site l'a changé depuis
+// 3. texte intégral, avec les mots clés d'Ophirofox
+// minScore : score minimal pour ouvrir un résultat (deux titres français sans rapport ont déjà
+// une similarité d'environ 0,35) ; la vérification du texte tranche ensuite.
+const OPHIROFOX_INLINE_STEPS = [
+    { field: "TIT_HEAD=", terms: "keywords", match: "title", minScore: 0.55 },
+    { field: "TIT_HEAD=", terms: "urlKeywords", match: "words", minScore: 0.8 },
+    { field: "TEXT=", terms: "keywords", match: "title", minScore: 0.45 },
+];
+
+/**
+ * Premiers mots significatifs du chemin de l'URL, sans les identifiants
+ * (…-mortifere_6783475_3232.html, …-20260925, …-5a440ca0-b1a6-11f1-926d-8837bd37b66e)
+ * @returns {string} vide si l'URL n'en contient pas assez
+ */
+function ophirofoxInlineUrlKeywords() {
+    const slug = window.location.pathname.split("/").filter(Boolean).pop() || "";
+    const words = slug
+        .replace(/\.html?$/, "")
+        .replace(/-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/, "")
+        .replace(/(_\d+)+$|-\d{6,}$/, "")
+        .split("-")
+        // Mots courts et articles collés (« leglise » pour « l'Église ») : Europresse ne les trouve pas
+        .filter(word => word.length > 3 && !/^[ld][aeiouy]/.test(word) && !/^\d+$/.test(word))
+        .slice(0, 5);
+    return words.length >= 3 ? words.join(" ") : "";
+}
 
 function ophirofoxInlineEscape(text) {
     const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" };
@@ -59,7 +82,14 @@ function ophirofoxInlineAlign(pageParagraphs, blocks) {
             block.includes(paragraph.slice(0, 60)) || ophirofoxInlineSimilarity(block, paragraph) > 0.8);
         if (index === -1) continue;
         const truncated = v === visible.length - 1 && normalizedBlocks[index].length > paragraph.length + 20;
-        return { start: index + 1, replaceIndex: truncated ? index : null };
+        // Les paragraphes visibles suivants, pas retrouvés tels quels, peuvent quand même être
+        // dans l'article : on les saute pour ne pas les ajouter une seconde fois
+        let start = index + 1;
+        for (const later of visible.slice(v + 1)) {
+            const next = normalizedBlocks.findIndex((block, i) => i >= start && ophirofoxInlineSimilarity(block, later) > 0.6);
+            if (next !== -1) start = next + 1;
+        }
+        return { start, replaceIndex: truncated ? index : null };
     }
     return null;
 }
@@ -81,17 +111,21 @@ async function ophirofoxInlineLoad(adapter, config, attempt) {
     document.documentElement.classList.add("ophirofox-inline-loading");
 
     try {
-        const field = OPHIROFOX_INLINE_STEPS[attempt.step];
-        if (!attempt.results[field]) {
-            attempt.results[field] = await ophirofoxInlineSearch(field, { ...adapter.article(), ...attempt.search }, config);
+        // Étape sans mots clés (URL sans titre) : on passe à la suivante
+        while (attempt.step < OPHIROFOX_INLINE_STEPS.length - 1 &&
+            !attempt.search[OPHIROFOX_INLINE_STEPS[attempt.step].terms]) attempt.step++;
+        const step = OPHIROFOX_INLINE_STEPS[attempt.step];
+        if (!attempt.results[attempt.step]) {
+            const article = { ...adapter.article(), ...attempt.search, keywords: attempt.search[step.terms] };
+            attempt.results[attempt.step] = await ophirofoxInlineSearch(step, article, config);
         }
-        const candidate = attempt.results[field].find(result =>
-            !attempt.tried.has(result.href) && result.score >= OPHIROFOX_INLINE_MIN_SCORE[field]);
+        const candidate = attempt.results[attempt.step].find(result =>
+            !attempt.tried.has(result.href) && result.score >= step.minScore);
 
         if (candidate) {
             // Certaines éditions reprennent la légende et le crédit de la photo, déjà présents sur la page
             const captions = adapter.captions().map(ophirofoxInlineNormalize);
-            const blocks = (await ophirofoxInlineFetchArticle(candidate)).filter(block =>
+            const blocks = (await ophirofoxInlineFetchArticle(candidate)).filter(block => !adapter.ignore(block.text) &&
                 !captions.some(caption => caption.includes(ophirofoxInlineNormalize(block.text))));
             attempt.tried.add(candidate.href);
             const alignment = ophirofoxInlineAlign(adapter.visibleParagraphs(), blocks);
@@ -168,6 +202,7 @@ function ophirofoxInlineSearchTerms(europresseLink) {
     return {
         keywords: europresseLink?.dataset.keywords,
         publishedTime: europresseLink?.dataset.publishedTime,
+        urlKeywords: ophirofoxInlineUrlKeywords(),
     };
 }
 
@@ -212,7 +247,7 @@ function ophirofoxInlineAddLinks(config, onClick) {
  * (inline/site.js), qui construit cet adaptateur à partir de leur description.
  * @param {{isArticle: () => boolean, isPaywalled: () => boolean,
  *   article: () => {title:string, sources:string[]}, captions: () => string[],
- *   visibleParagraphs: () => string[], insertionPoint: () => Element,
+ *   ignore: (text:string) => boolean, visibleParagraphs: () => string[], insertionPoint: () => Element,
  *   placeOffer: (offer:Element) => void, uncover: () => void, unlock: () => void,
  *   replaceLastParagraph: (text:string) => void,
  *   render: (block:{type:string, text:string}) => Element}} adapter
