@@ -48,14 +48,18 @@ const ophirofoxInlineLefigaro = {
         return blocks[blocks.length - 1] || this.content().firstElementChild;
     },
 
-    // Juste avant le bloc d'abonnement, qui ne recouvre pas le texte
+    // En haut du bloc d'abonnement, sous le fondu qu'il dessine au-dessus de lui
     placeOffer(offer) {
         const paywall = this.paywall();
-        if (paywall) paywall.before(offer);
+        if (paywall) paywall.prepend(offer);
         else this.insertionPoint().after(offer);
     },
 
-    uncover() { },
+    // Le bloc d'abonnement dessine un fondu (::before) sur la fin du texte : on le retire pour
+    // que l'état du chargement, puis le texte ajouté, restent lisibles
+    uncover() {
+        this.paywall()?.classList.add("ophirofox-inline-uncovered");
+    },
 
     unlock() {
         this.paywall()?.remove();
