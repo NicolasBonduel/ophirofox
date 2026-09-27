@@ -9,7 +9,7 @@ let injectEuropressPending = false;
 // Configuration des scripts de contenu
 const europresse_content_script = {
   css: ["/content_scripts/europresse_article.css"],
-  js: ["/content_scripts/europresse_article.js", "/content_scripts/europresse_search.js"]
+  js: ["/content_scripts/europresse_article.js", "/content_scripts/europresse_query.js", "/content_scripts/europresse_search.js"]
 };
 
 // ======== FONCTIONS DE GESTION DES PARAMÈTRES ========
