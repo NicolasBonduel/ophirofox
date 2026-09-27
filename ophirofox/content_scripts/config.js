@@ -92,6 +92,9 @@ async function ophirofoxEuropresseLink(keywords, { publishedTime } = {}) {
   const a = document.createElement("a");
   a.textContent = "Lire sur Europresse";
   a.className = "ophirofox-europresse";
+  // Repris par le mode « Lire ici » (inline/inline.js)
+  a.dataset.keywords = keywords;
+  a.dataset.publishedTime = publishedTime;
   const setKeywords = () => new Promise(accept => {
     Promise.all([
       chrome.storage.local.set({

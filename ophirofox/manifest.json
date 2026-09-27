@@ -133,7 +133,8 @@
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "background.js",
+      "inline/background.js"
     ],
     "persistent": true,
     "type": "module"
@@ -145,10 +146,15 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lemonde.js"
+        "content_scripts/lemonde.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/lemonde.js"
       ],
       "css": [
-        "content_scripts/lemonde.css"
+        "content_scripts/lemonde.css",
+        "inline/inline.css"
       ]
     },
     {
