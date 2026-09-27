@@ -14,40 +14,27 @@ async function addEuropresseButton() {
 }
 
 async function onLoad() {
-    const bannerSelector = document.querySelector(".article-section .paywall-abo, .btn-subscribe");
-    if (bannerSelector) {
-        addEuropresseButton();
-    } else {
-        // console.log("Premium banner couldn't be found")
-        /* Premium banner couldn't be found, use MutationObserver as fallback */
-        var elementFound = false;
-        const callback = (mutationList, observer) => {
-            for (const mutation of mutationList) {
-                for (const e of mutation.addedNodes) {
-                    const bannerSelectorString = 'btn-subscribe';
-                    if (
-                        e.classList?.contains(bannerSelectorString) ||
-                        e.classList?.contains('paywall-abo') ||
-                        e.querySelector?.('.paywall-abo, .btn-subscribe')
-                    ) {
-                        observer.disconnect();
-                        elementFound = true;
-                        addEuropresseButton();
-                        break;
-                    }
-                }
-                if (elementFound) {
-                    break;
-                }
-            }
-        };
-        const observer = new MutationObserver(callback);
-        // Le paywall est inséré après le chargement, dans l'article : observer toute la page
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    }
+    // Le Parisien construit la page après le chargement : le paywall arrive plus tard, et
+    // l'en-tête est recréé, ce qui retire le lien. On (ré)ajoute le lien tant qu'il manque,
+    // pendant les premières secondes.
+    let adding = false;
+    const addIfMissing = async () => {
+        if (adding || document.querySelector("a.ophirofox-europresse")) return;
+        if (!document.querySelector(".article-section .paywall-abo, .btn-subscribe")) return;
+        adding = true;
+        try {
+            await addEuropresseButton();
+        } finally {
+            adding = false;
+        }
+    };
+    const observer = new MutationObserver(addIfMissing);
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    setTimeout(() => observer.disconnect(), 15000);
+    await addIfMissing();
 }
 
 onLoad().catch(console.error);
