@@ -49,6 +49,12 @@
     cursor: pointer;
 }
 
+/* Intertitre ajouté quand la page n'en a pas pour servir de modèle */
+.ophirofox-inline-heading {
+    margin: 1.5em 0 0.5em;
+    font-weight: bold;
+}
+
 /* Pendant la recherche et le chargement de l'article */
 .ophirofox-inline-loading,
 .ophirofox-inline-loading * {

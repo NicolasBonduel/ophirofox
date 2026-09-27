@@ -176,10 +176,15 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lefigaro.js"
+        "content_scripts/lefigaro.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/lefigaro.js"
       ],
       "css": [
-        "content_scripts/lefigaro.css"
+        "content_scripts/lefigaro.css",
+        "inline/inline.css"
       ]
     },
     {
