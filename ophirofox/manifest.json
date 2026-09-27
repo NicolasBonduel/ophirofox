@@ -356,10 +356,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/ouestfrance.js"
+        "content_scripts/ouestfrance.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/ouestfrance.js"
       ],
       "css": [
-        "content_scripts/ouestfrance.css"
+        "content_scripts/ouestfrance.css",
+        "inline/inline.css"
       ]
     },
     {
