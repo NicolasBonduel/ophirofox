@@ -182,9 +182,15 @@ function ophirofoxInlineAskLogin(adapter, config, attempt, status, detail) {
  */
 function ophirofoxInlineSearchTerms(europresseLink) {
     europresseLink = europresseLink || document.querySelector("a.ophirofox-europresse:not(.ophirofox-inline-link)");
+    // Sans lien (certains sites reconstruisent l'en-tête après le chargement et le retirent),
+    // mêmes valeurs par défaut que ophirofoxEuropresseLink : le h1 et la date de publication
+    const published = document.querySelector("meta[property='article:published_time'], meta[property='og:article:published_time'], meta[property='date:published_time']")
+        ?.getAttribute("content");
+    const publishedDate = new Date(published || "");
     return {
-        keywords: europresseLink?.dataset.keywords,
-        publishedTime: europresseLink?.dataset.publishedTime,
+        keywords: europresseLink?.dataset.keywords || document.querySelector("h1")?.textContent.trim(),
+        publishedTime: europresseLink?.dataset.publishedTime ??
+            (isNaN(publishedDate) ? "" : publishedDate.toISOString().slice(0, 10)),
         urlKeywords: ophirofoxUrlKeywords(window.location.href),
     };
 }
