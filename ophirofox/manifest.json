@@ -248,7 +248,8 @@
     },
     {
       "matches": [
-        "https://www.lamontagne.fr/*"
+        "https://www.lamontagne.fr/*",
+        "https://www.larep.fr/*"
       ],
       "js": [
         "content_scripts/config.js",
