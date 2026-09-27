@@ -242,7 +242,6 @@ function ophirofoxInlineAddLinks(config, onClick) {
  *   render: (block:{type:string, text:string}) => Element}} adapter
  */
 async function ophirofoxInlineStart(adapter) {
-    if (!adapter.isArticle()) return;
     const config = await ophirofoxInlineConfig();
     ophirofoxInlineDebug("partenaire", config);
     // Partenaire non pris en charge : seul le lien habituel est affiché
@@ -266,10 +265,11 @@ async function ophirofoxInlineStart(adapter) {
         loading = false;
     };
 
-    // Le paywall et les liens d'Ophirofox apparaissent après le chargement de la page
+    // L'article (chargé en différé sur certains sites), le paywall et les liens d'Ophirofox
+    // apparaissent après le chargement de la page
     let offered = false;
     const addLinks = () => {
-        if (!adapter.isPaywalled()) return;
+        if (!adapter.isArticle() || !adapter.isPaywalled()) return;
         if (!offered) {
             offered = true;
             ophirofoxInlineOffer(adapter, config, load);
