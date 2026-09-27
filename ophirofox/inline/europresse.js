@@ -161,6 +161,51 @@ function ophirofoxInlineTitleScore(pageTitle, resultTitle) {
 }
 
 /**
+ * Page de recherche d'Europresse, en réutilisant la session en cours ou en en ouvrant une.
+ * Quand la session Europresse a expiré (celle du proxy restant valide), Europresse répond
+ * par une page qui redirige en JavaScript vers ErrorCode=4000112, même à l'ouverture de
+ * session : il faut d'abord la fermer via /Default.aspx?ErrorCode=4000112, comme le fait
+ * un onglet (voir ophirofoxRealoadOnExpired dans europresse_search.js).
+ * @returns {Promise<{page: {response: object, doc: Document}, form: HTMLFormElement}>}
+ */
+async function ophirofoxInlineSearchForm(config) {
+    const open = async (path) => {
+        try {
+            const page = await ophirofoxInlineGet(config.proxyBase + path);
+            return { page, form: page.doc.querySelector('input[name="Keywords"]')?.form };
+        } catch (err) {
+            // Session Europresse expirée : les étapes suivantes la recréent, et ne renvoient vers
+            // la connexion de l'établissement que si celle du proxy a expiré aussi
+            if (!(err instanceof OphirofoxInlineLoginRequired)) throw err;
+            return { page: null, form: null };
+        }
+    };
+    const isExpired = ({ page }) => !!page && page.response.html.length < 500 &&
+        page.response.html.includes("ErrorCode=" + OPHIROFOX_INLINE_SESSION_EXPIRED);
+
+    let result = await open("/Search/Reading");
+    if (!result.form && !isExpired(result)) result = await open(config.sessionPath);
+    if (!result.form && isExpired(result)) {
+        ophirofoxInlineDebug("session Europresse expirée, réouverture");
+        await open("/Default.aspx?ErrorCode=" + OPHIROFOX_INLINE_SESSION_EXPIRED);
+        result = await open(config.sessionPath);
+    }
+    if (result.form) return result;
+
+    // Sans page, la dernière requête a été redirigée vers la connexion : on la refait sans
+    // intercepter l'erreur, qui indique où elle a été redirigée
+    let page = result.page;
+    if (!page) {
+        page = await ophirofoxInlineGet(config.proxyBase + config.sessionPath);
+        const form = page.doc.querySelector('input[name="Keywords"]')?.form;
+        if (form) return { page, form };
+    }
+    // Autre page (message d'information…) : se reconnecter recrée la session
+    const path = new URL(page.response.url).pathname;
+    throw new OphirofoxInlineLoginRequired(`page reçue : « ${page.doc.title || "sans titre"} » (${path})`);
+}
+
+/**
  * Recherche l'article sur Europresse et classe les résultats
  * @param {string} field - "TIT_HEAD=" (titre et chapeau) ou "TEXT=" (texte intégral)
  * @param {{keywords:string, publishedTime:string, title:string, sources:string[]}} article
@@ -170,27 +215,7 @@ function ophirofoxInlineTitleScore(pageTitle, resultTitle) {
  * @returns {Promise<{title:string, source:string, href:string, score:number}[]>}
  */
 async function ophirofoxInlineSearch(field, { keywords, publishedTime, title, sources = [] }, config) {
-    // On réutilise la session Europresse en cours ; sinon on en ouvre une (l'ouverture de
-    // session redirige vers /Search/Reading, qui porte le formulaire de recherche)
-    let page = null;
-    let form = null;
-    try {
-        page = await ophirofoxInlineGet(config.proxyBase + "/Search/Reading");
-        form = page.doc.querySelector('input[name="Keywords"]')?.form;
-    } catch (err) {
-        // Session Europresse expirée : l'ouverture de session ci-dessous la recrée, et ne
-        // renvoie vers la connexion de l'établissement que si celle du proxy a expiré aussi
-        if (!(err instanceof OphirofoxInlineLoginRequired)) throw err;
-    }
-    if (!form) {
-        page = await ophirofoxInlineGet(config.proxyBase + config.sessionPath);
-        form = page.doc.querySelector('input[name="Keywords"]')?.form;
-    }
-    // Autre page (session à moitié ouverte, message d'information…) : se reconnecter recrée la session
-    if (!form) {
-        const path = new URL(page.response.url).pathname;
-        throw new OphirofoxInlineLoginRequired(`page reçue : « ${page.doc.title || "sans titre"} » (${path})`);
-    }
+    const { page, form } = await ophirofoxInlineSearchForm(config);
 
     const fields = ophirofoxInlineFormFields(form);
     const dateRange = form.querySelector('select[name="DateFilter.DateRange"]');
