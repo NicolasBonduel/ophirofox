@@ -44,7 +44,7 @@ S'il y a une fenêtre paywall qui s'affiche, essayer de récupérer le bouton d'
 
 # Ajout du mode « Lire ici » à un site de presse
 
-Le mode « Lire ici » complète l'article directement dans la page. Il ne fonctionne qu'avec les partenaires EZproxy (`AUTH_URL` en `…/login?url=…`), et suppose que le site a déjà son lien « Lire sur Europresse » (section précédente) : il en reprend les mots clés.
+Le mode « Lire ici » complète l'article directement dans la page. Il ne fonctionne qu'avec les partenaires dont l'`AUTH_URL` passe par un proxy EZproxy (`…/login?url=…` ou `…/login?qurl=…`), comme la BnF et la plupart des universités ; les autres modes d'accès (OpenAthens, e-sidoc, GAR, adresse IP…) gardent seulement le lien habituel. Il suppose que le site a déjà son lien « Lire sur Europresse » (section précédente) : il en reprend les mots clés.
 
 - Dans l'entrée du site dans `ophirofox/manifest.json`, ajouter après le script du site :
 
