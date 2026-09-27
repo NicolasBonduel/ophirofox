@@ -12,8 +12,11 @@ const OPHIROFOX_INLINE_SESSION_EXPIRED = "4000112";
 
 class OphirofoxInlineLoginRequired extends Error { }
 
+// Nom du site courant (voir ophirofoxInlineSite), pour filtrer la console sur un seul site
+let ophirofoxInlineSiteName = "";
+
 function ophirofoxInlineDebug(...args) {
-    console.debug("(Ophirofox inline)", ...args);
+    console.debug(`(Ophirofox inline · ${ophirofoxInlineSiteName})`, ...args);
 }
 
 /**

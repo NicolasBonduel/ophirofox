@@ -130,7 +130,7 @@ async function ophirofoxInlineLoad(adapter, config, attempt) {
             ophirofoxInlineAskLogin(adapter, config, attempt, status, err.message);
             return false;
         }
-        console.error("(Ophirofox inline)", err);
+        console.error(`(Ophirofox inline · ${ophirofoxInlineSiteName})`, err);
         status.set(`Erreur Europresse : ${ophirofoxInlineEscape(err.message)}`, "error");
         return false;
     } finally {
@@ -208,7 +208,8 @@ function ophirofoxInlineAddLinks(config, onClick) {
 }
 
 /**
- * Point d'entrée des adaptateurs de site
+ * Démarre le mode « Lire ici » sur la page. Les sites passent par ophirofoxInlineSite
+ * (inline/site.js), qui construit cet adaptateur à partir de leur description.
  * @param {{isArticle: () => boolean, isPaywalled: () => boolean,
  *   article: () => {title:string, sources:string[]}, captions: () => string[],
  *   visibleParagraphs: () => string[], insertionPoint: () => Element,

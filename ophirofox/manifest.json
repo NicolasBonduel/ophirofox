@@ -150,6 +150,7 @@
         "content_scripts/europresse_query.js",
         "inline/europresse.js",
         "inline/inline.js",
+        "inline/site.js",
         "inline/lemonde.js"
       ],
       "css": [
@@ -180,6 +181,7 @@
         "content_scripts/europresse_query.js",
         "inline/europresse.js",
         "inline/inline.js",
+        "inline/site.js",
         "inline/lefigaro.js"
       ],
       "css": [

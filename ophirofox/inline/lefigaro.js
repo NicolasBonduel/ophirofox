@@ -1,89 +1,19 @@
-// Adaptateur Le Figaro : les articles abonnés affichent les premiers paragraphes puis
+// Le Figaro : les articles abonnés affichent les premiers paragraphes puis
 // « Cet article est réservé aux abonnés. Il vous reste X % à découvrir. »
 
-const ophirofoxInlineLefigaro = {
-    content() {
-        return document.querySelector(".fig-content-body");
-    },
+ophirofoxInlineSite({
+    name: "lefigaro",
+    sources: ["Le Figaro (site web)", "Le Figaro"],
+    title: "h1.fig-headline, h1",
+    content: ".fig-content-body",
+    paragraph: "p.fig-paragraph",
+    heading: ".fig-content-body h2, .fig-content-body h3",
+    newHeading: { tag: "h2", className: "fig-body-heading ophirofox-inline-heading" },
+    paywall: "#fig-premium-paywall",
+    offer: "#fig-premium-paywall",
 
-    title() {
-        return document.querySelector("h1.fig-headline, h1");
-    },
-
-    paywall() {
-        return document.getElementById("fig-premium-paywall");
-    },
-
-    blocks() {
-        return this.content().querySelectorAll("p.fig-paragraph, h2, h3");
-    },
-
-    isArticle() {
-        return !!this.title() && !!this.content();
-    },
-
-    isPaywalled() {
-        return !!this.paywall();
-    },
-
-    article() {
-        return {
-            // Sert à classer les résultats ; la recherche utilise les mots clés d'Ophirofox
-            title: this.title().textContent.replace(/\s+/g, " ").trim(),
-            // L'édition web correspond le mieux au texte du site
-            sources: ["Le Figaro (site web)", "Le Figaro"],
-        };
-    },
-
-    captions() {
-        return Array.from(document.querySelectorAll("figcaption")).map(elem => elem.textContent);
-    },
-
-    visibleParagraphs() {
-        return Array.from(this.blocks()).map(elem => elem.textContent);
-    },
-
-    insertionPoint() {
-        const blocks = this.blocks();
-        return blocks[blocks.length - 1] || this.content().firstElementChild;
-    },
-
-    // En haut du bloc d'abonnement, sous le fondu qu'il dessine au-dessus de lui
-    placeOffer(offer) {
-        const paywall = this.paywall();
-        if (paywall) paywall.prepend(offer);
-        else this.insertionPoint().after(offer);
-    },
-
-    // Le bloc d'abonnement dessine un fondu (::before) sur la fin du texte : on le retire pour
-    // que l'état du chargement, puis le texte ajouté, restent lisibles
+    // Le bloc d'abonnement dessine un fondu (::before) sur la fin du texte
     uncover() {
-        this.paywall()?.classList.add("ophirofox-inline-uncovered");
+        document.getElementById("fig-premium-paywall")?.classList.add("ophirofox-inline-uncovered");
     },
-
-    unlock() {
-        this.paywall()?.remove();
-    },
-
-    replaceLastParagraph(text) {
-        const paragraphs = this.content().querySelectorAll("p.fig-paragraph");
-        if (paragraphs.length) paragraphs[paragraphs.length - 1].textContent = text;
-    },
-
-    render(block) {
-        let elem;
-        if (block.type === "heading") {
-            // Intertitre de la page s'il y en a un, sinon celui des articles du Figaro
-            const pageHeading = this.content().querySelector("h2, h3");
-            elem = document.createElement(pageHeading?.tagName || "h2");
-            elem.className = pageHeading?.className || "fig-body-heading ophirofox-inline-heading";
-        } else {
-            elem = document.createElement("p");
-            elem.className = "fig-paragraph";
-        }
-        elem.textContent = block.text;
-        return elem;
-    },
-};
-
-ophirofoxInlineStart(ophirofoxInlineLefigaro).catch(console.error);
+});
