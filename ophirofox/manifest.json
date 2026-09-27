@@ -410,10 +410,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/le-parisien.js"
+        "content_scripts/le-parisien.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/le-parisien.js"
       ],
       "css": [
-        "content_scripts/le-parisien.css"
+        "content_scripts/le-parisien.css",
+        "inline/inline.css"
       ]
     },
     {
