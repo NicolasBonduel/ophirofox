@@ -304,10 +304,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lesechos.js"
+        "content_scripts/lesechos.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/lesechos.js"
       ],
       "css": [
-        "content_scripts/lesechos.css"
+        "content_scripts/lesechos.css",
+        "inline/inline.css"
       ]
     },
     {
