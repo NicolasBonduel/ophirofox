@@ -165,10 +165,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/liberation.js"
+        "content_scripts/liberation.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/liberation.js"
       ],
       "css": [
-        "content_scripts/liberation.css"
+        "content_scripts/liberation.css",
+        "inline/inline.css"
       ]
     },
     {
