@@ -20,23 +20,6 @@ const OPHIROFOX_INLINE_STEPS = [
     { field: "TEXT=", terms: "keywords", match: "title", minScore: 0.45 },
 ];
 
-/**
- * Premiers mots significatifs du chemin de l'URL, sans les identifiants
- * (…-mortifere_6783475_3232.html, …-20260925, …-5a440ca0-b1a6-11f1-926d-8837bd37b66e)
- * @returns {string} vide si l'URL n'en contient pas assez
- */
-function ophirofoxInlineUrlKeywords() {
-    const slug = window.location.pathname.split("/").filter(Boolean).pop() || "";
-    const words = slug
-        .replace(/\.html?$/, "")
-        .replace(/-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/, "")
-        .replace(/(_\d+)+$|-\d{6,}$/, "")
-        .split("-")
-        // Mots courts et articles collés (« leglise » pour « l'Église ») : Europresse ne les trouve pas
-        .filter(word => word.length > 3 && !/^[ld][aeiouy]/.test(word) && !/^\d+$/.test(word))
-        .slice(0, 5);
-    return words.length >= 3 ? words.join(" ") : "";
-}
 
 function ophirofoxInlineEscape(text) {
     const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" };
@@ -202,7 +185,7 @@ function ophirofoxInlineSearchTerms(europresseLink) {
     return {
         keywords: europresseLink?.dataset.keywords,
         publishedTime: europresseLink?.dataset.publishedTime,
-        urlKeywords: ophirofoxInlineUrlKeywords(),
+        urlKeywords: ophirofoxUrlKeywords(window.location.href),
     };
 }
 
