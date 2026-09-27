@@ -253,16 +253,10 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/la-montagne.js",
-        "content_scripts/europresse_query.js",
-        "inline/europresse.js",
-        "inline/inline.js",
-        "inline/site.js",
-        "inline/centre-france.js"
+        "content_scripts/la-montagne.js"
       ],
       "css": [
-        "content_scripts/la-montagne.css",
-        "inline/inline.css"
+        "content_scripts/la-montagne.css"
       ]
     },
     {
