@@ -28,7 +28,7 @@ async function onLoad() {
                     if (
                         e.classList?.contains(bannerSelectorString) ||
                         e.classList?.contains('paywall-abo') ||
-                        e.querySelector?.('.paywall-abo')
+                        e.querySelector?.('.paywall-abo, .btn-subscribe')
                     ) {
                         observer.disconnect();
                         elementFound = true;
@@ -42,8 +42,10 @@ async function onLoad() {
             }
         };
         const observer = new MutationObserver(callback);
+        // Le paywall est inséré après le chargement, dans l'article : observer toute la page
         observer.observe(document.body, {
-            childList: true
+            childList: true,
+            subtree: true
         });
     }
 }
