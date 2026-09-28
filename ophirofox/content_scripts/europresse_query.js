@@ -80,9 +80,11 @@ function ophirofoxUrlKeywords(url) {
         .replace(/-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/, "")
         .replace(/(_\d+)+$|-\d{6,}$/, "")
         .split("-")
-        // Mots courts et articles collés (« leglise » pour « l'Église ») : Europresse ne les trouve pas.
-        // Une requête courte est aussi plus sûre : un mot absent du titre suffit à ne rien trouver.
-        .filter(word => word.length > 3 && !/^[ld][aeiouy]/.test(word) && !/^\d+$/.test(word))
-        .slice(0, 5);
+        // Mots courts : Europresse ne les trouve pas. Une requête courte est aussi plus sûre : un
+        // mot absent du titre suffit à ne rien trouver.
+        .filter(word => word.length > 3 && !/^\d+$/.test(word))
+        .slice(0, 5)
+        // Article élidé collé au mot (« leglise ») ou mot entier (« lison ») : les deux formes
+        .map(word => /^[ld][aeiouy]/.test(word) ? `(${word} OU ${word.slice(1)})` : word);
     return words.length >= 3 ? words.join(" ") : "";
 }

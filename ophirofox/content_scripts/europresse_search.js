@@ -44,41 +44,12 @@ async function hasConsumable() {
     });
 }
 
-/**
- * Mots du titre d'origine, gardés dans l'URL quand le site a changé le titre de l'article
- * (…/des-victimes-seront-recues-par-le-pape_6783475_3232.html). Les identifiants et les
- * dates contiennent des chiffres, et les mots courts gênent la recherche. Un mot qui commence
- * par l ou d suivi d'une voyelle peut être un article élidé collé au mot (« leglise ») ou un
- * mot entier (« lison ») : on cherche les deux formes, (leglise OU eglise).
- * @returns {string} vide si l'URL n'a pas assez de mots
- */
-function ophirofoxUrlKeywords(url) {
-    const slug = (url || "").split(/[?#]/)[0].split("/").filter(Boolean).pop() || "";
-    const words = slug.replace(/\.html?$/, "").split(/[-_]/)
-        .filter(word => word.length > 3 && !/\d/.test(word))
-        .slice(0, 5)
-        .map(word => /^[ld][aeiouy]/.test(word) ? `(${word} OU ${word.slice(1)})` : word);
-    return words.length >= 3 ? words.join(" ") : "";
-}
-
 async function loadRead(){
     const path = window.location.pathname;
     const { search_terms, published_time } = await consumeReadRequest();
     if (!search_terms) return;
     
-    const stopwords = new Set(['d', 'l', 'et', 'sans', 'or', 'par']);
-    /*
-        L = { Lu , Ll , Lt , Lm , Lo }
-        M = { Mn , Mc , Me }
-        Nd: a decimal digit
-        Unicode specification: https://www.unicode.org/reports/tr44/#General_Category_Values
-        Categories browser: https://www.compart.com/fr/unicode/category
-    */
-    const keywords = search_terms
-        .replace(/œ/g, 'oe')
-        .split(/[^\p{L}\p{M}\p{Nd}]+/u)
-        .filter(w => !stopwords.has(w))
-        .join(' ');
+    const keywords = ophirofoxSearchKeywords(search_terms);
     const keyword_field_id = path.startsWith("/Search/Result") ? "NativeQuery" : "Keywords";
     const keyword_field = document.getElementById(keyword_field_id);
     keyword_field.value = 'TIT_HEAD=' + keywords;
@@ -87,51 +58,7 @@ async function loadRead(){
     const date_filter = document.getElementById("DateFilter_DateRange");
 
     if (date_filter) {
-        if (!published_time) { // Full expand the time range
-            date_filter.value = 9;
-        } else {
-            const publishedDate = new Date(published_time);
-            publishedDate.setUTCHours(0, 0, 0, 0); // Europresse saves the exact UTC date, but "depuis X jours" is based on midnight 
-            const currentDate = new Date();
-
-            const timeDifference = currentDate.getTime() - publishedDate.getTime();
-            // Rounds up for tolerance to be sure to not filtering badly
-            const daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-
-            let filterValue = 9;
-
-            switch (true) {
-                case (daysDifference <= 1):
-                    filterValue = 2; // Depuis hier
-                    break;
-                case (daysDifference <= 3):
-                    filterValue = 11; // Depuis 3 jours
-                    break;
-                case (daysDifference <= 7):
-                    filterValue = 3; // Depuis 7 jours
-                    break;
-                case (daysDifference <= 30):
-                    filterValue = 4; // Depuis 30 jours
-                    break;
-                case (daysDifference <= 90):
-                    filterValue = 5; // Depuis 3 mois
-                    break;
-                case (daysDifference <= 180):
-                    filterValue = 6; // Depuis 6 mois
-                    break;
-                case (daysDifference <= 365):
-                    filterValue = 7; // Depuis 1 an
-                    break;
-                case (daysDifference <= 730):
-                    filterValue = 8; // Depuis 2 ans
-                    break;
-                default:
-                    filterValue = 9; // Dans toutes les archives
-                    break;
-            }
-
-            date_filter.value = filterValue;
-        }
+        date_filter.value = ophirofoxDateRange(published_time);
     }
     keyword_field.form.submit();
 }

@@ -157,10 +157,15 @@ function ophirofoxInlineParseResults(doc, baseUrl) {
 // Part des mots de la requête présents dans le titre du résultat : pour une requête courte
 // (mots de l'URL), plus parlant que la similarité, qui pénalise l'écart de longueur
 function ophirofoxInlineWordCoverage(query, resultTitle) {
-    const words = ophirofoxInlineNormalize(query).split(/[^a-z0-9]+/).filter(Boolean);
+    // Un groupe (leglise OU eglise) compte comme un mot, présent si l'une des formes l'est
+    const words = (query.match(/\([^)]*\)|\S+/g) || [])
+        .map(group => group.replace(/[()]/g, "").split(/\s+OU\s+/)
+            .map(word => ophirofoxInlineNormalize(word).replace(/[^a-z0-9]+/g, ""))
+            .filter(Boolean))
+        .filter(forms => forms.length);
     const title = ophirofoxInlineNormalize(resultTitle).replace(/[^a-z0-9]+/g, " ");
     if (words.length === 0) return 0;
-    return words.filter(word => title.includes(word)).length / words.length;
+    return words.filter(forms => forms.some(word => title.includes(word))).length / words.length;
 }
 
 // Europresse préfixe les titres par les auteurs (« Adam Baczko et … Penser la guerre… ») :
@@ -236,7 +241,8 @@ async function ophirofoxInlineSearch({ field, match }, { keywords, publishedTime
     if (dateRange) fields.set(dateRange.name, String(ophirofoxDateRange(publishedTime)));
     const action = new URL(form.getAttribute("action") || page.response.url, page.response.url).href;
 
-    fields.set("Keywords", field + ophirofoxSearchKeywords(keywords));
+    // Les mots de l'URL sont déjà nettoyés, avec leurs groupes (leglise OU eglise)
+    fields.set("Keywords", field + (match === "words" ? keywords : ophirofoxSearchKeywords(keywords)));
     await ophirofoxInlineGet(action, {
         method: "POST",
         body: fields.toString(),
