@@ -527,10 +527,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/la-tribune.js"
+        "content_scripts/la-tribune.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/latribune.js"
       ],
       "css": [
-        "content_scripts/la-tribune.css"
+        "content_scripts/la-tribune.css",
+        "inline/inline.css"
       ]
     },
     {
