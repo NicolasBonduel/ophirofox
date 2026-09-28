@@ -453,10 +453,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lexpress.js"
+        "content_scripts/lexpress.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/lexpress.js"
       ],
       "css": [
-        "content_scripts/lexpress.css"
+        "content_scripts/lexpress.css",
+        "inline/inline.css"
       ]
     },
     {
