@@ -258,10 +258,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/courrier-international.js"
+        "content_scripts/courrier-international.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/courrier-international.js"
       ],
       "css": [
-        "content_scripts/courrier-international.css"
+        "content_scripts/courrier-international.css",
+        "inline/inline.css"
       ]
     },
     {

@@ -1,3 +1,8 @@
 .ophirofox-europresse {
     margin-left: 10px;
 }
+
+/* Fondu sur la fin du texte, retiré une fois l'article complété par « Lire ici » */
+.article-text.ophirofox-inline-unlocked::before {
+    display: none !important;
+}
