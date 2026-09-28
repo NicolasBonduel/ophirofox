@@ -11,7 +11,6 @@ ophirofoxInlineSite({
     newHeading: { tag: "h2", className: "article-title ophirofox-inline-heading" },
     paywall: "#article-body-paywall",
     paywallText: /réservé aux abonnés/i,
-    offer: "#article-body-paywall",
 
     // Un bloc vide juste avant le paywall, remonté sur la fin du texte (margin-top négatif),
     // dessine le fondu et recouvre le bandeau

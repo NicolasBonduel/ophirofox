@@ -15,16 +15,18 @@
  * « Lire aussi »…), ignorés sur la page comme dans le texte d'Europresse
  * @param {{tag:string, className:string}} site.newHeading - intertitre ajouté quand la page
  * n'en a pas pour servir de modèle
+ * @param {string} [site.newParagraph] - classes des paragraphes ajoutés, quand celles du premier
+ * paragraphe de la page ne conviennent pas (classe propre au premier paragraphe…)
  * @param {string} site.paywall - éléments du paywall, retirés une fois le texte complété
  * @param {RegExp} [site.paywallText] - si présent, seuls les éléments de site.paywall dont le
  * texte correspond comptent
- * @param {string} [site.offer] - conteneur en haut duquel placer le bandeau (à défaut, après
- * le texte visible)
+ * @param {string|null} [site.offer] - conteneur en haut duquel placer le bandeau ; par défaut,
+ * le premier élément de site.paywall ; null pour le placer après le texte visible
  * @param {() => void} [site.uncover] - retire ce qui recouvre la fin du texte visible (fondu,
  * paywall remonté…), appelé avant d'afficher le bandeau ou l'état du chargement
  * @param {object} [site.override] - méthodes de l'adaptateur à remplacer pour un site qui ne
- * suit pas ce schéma (voir ophirofoxInlineStart pour la liste), par exemple render ou
- * visibleParagraphs ; `this` y désigne l'adaptateur
+ * suit pas ce schéma (voir ophirofoxInlineStart pour la liste), par exemple render,
+ * visibleParagraphs ou placeLink ; `this` y désigne l'adaptateur
  */
 function ophirofoxInlineSite(site) {
     ophirofoxInlineSiteName = site.name;
@@ -58,11 +60,15 @@ function ophirofoxInlineSite(site) {
         },
 
         placeOffer(offer) {
-            const container = site.offer && document.querySelector(site.offer);
+            const container = site.offer === undefined ? paywall()[0] :
+                site.offer && document.querySelector(site.offer);
             adapter.uncover();
             if (container) container.prepend(offer);
             else adapter.insertionPoint().after(offer);
         },
+
+        // « Lire ici » à côté du lien d'Ophirofox, avec les mêmes classes
+        placeLink: (europresseLink, link) => europresseLink.after(link),
 
         uncover: site.uncover || (() => { }),
 
@@ -87,7 +93,7 @@ function ophirofoxInlineSite(site) {
             } else {
                 const pageParagraph = content().querySelector(site.paragraph);
                 elem = document.createElement(pageParagraph?.tagName || "p");
-                elem.className = pageParagraph?.className || "";
+                elem.className = site.newParagraph ?? pageParagraph?.className ?? "";
             }
             elem.textContent = block.text;
             return elem;

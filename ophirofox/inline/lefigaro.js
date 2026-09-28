@@ -10,7 +10,6 @@ ophirofoxInlineSite({
     heading: ".fig-content-body h2, .fig-content-body h3",
     newHeading: { tag: "h2", className: "fig-body-heading ophirofox-inline-heading" },
     paywall: "#fig-premium-paywall",
-    offer: "#fig-premium-paywall",
 
     // Le bloc d'abonnement dessine un fondu (::before) sur la fin du texte
     uncover() {

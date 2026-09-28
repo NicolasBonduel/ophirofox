@@ -12,7 +12,6 @@ ophirofoxInlineSite({
     // Liens vers d'autres articles, insérés entre les paragraphes
     skip: /^(à )?lire aussi\s*:/i,
     paywall: "#article-detail .mur",
-    offer: "#article-detail .mur",
 
     // Le texte est recouvert d'un fondu (.su-article::after)
     uncover() {

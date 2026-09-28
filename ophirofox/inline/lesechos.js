@@ -10,7 +10,6 @@ ophirofoxInlineSite({
     heading: ".post-paywall > h2, .post-paywall > h3",
     newHeading: { tag: "h2", className: "ophirofox-inline-heading" },
     paywall: "#paywall",
-    offer: "#paywall",
 
     // Le texte est recouvert d'un fondu (.post-paywall::after)
     uncover() {

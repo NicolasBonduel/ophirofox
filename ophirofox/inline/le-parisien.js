@@ -10,5 +10,4 @@ ophirofoxInlineSite({
     heading: ".article-section section.content > h2, .article-section section.content > h3",
     newHeading: { tag: "h2", className: "ophirofox-inline-heading" },
     paywall: ".article-section div.paywall",
-    offer: ".article-section div.paywall",
 });

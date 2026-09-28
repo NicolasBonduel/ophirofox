@@ -122,7 +122,12 @@ async function ophirofoxInlineLoad(adapter, config, attempt) {
                     `Europresse (${ophirofoxInlineEscape(candidate.source)})</a> · ${ophirofoxInlineEscape(config.name)}`,
                     "done"
                 );
-                document.querySelectorAll("a.ophirofox-inline-link").forEach(link => link.remove());
+                document.querySelectorAll("a.ophirofox-inline-link").forEach(link => {
+                    // Sans le lien, son conteneur éventuel (pastille, voir placeLink) est vide
+                    const parent = link.parentElement;
+                    link.remove();
+                    if (parent && !parent.textContent.trim()) parent.remove();
+                });
                 return true;
             }
         }
@@ -214,7 +219,7 @@ function ophirofoxInlineOffer(adapter, config, onClick) {
  * Ajoute « Lire ici » après chaque lien « Lire sur Europresse » d'Ophirofox, avec les mêmes
  * classes pour que les deux se ressemblent
  */
-function ophirofoxInlineAddLinks(config, onClick) {
+function ophirofoxInlineAddLinks(config, onClick, placeLink) {
     for (const europresseLink of document.querySelectorAll("a.ophirofox-europresse:not(.ophirofox-inline-link)")) {
         if ("ophirofoxInline" in europresseLink.dataset) continue;
         europresseLink.dataset.ophirofoxInline = "";
@@ -227,7 +232,7 @@ function ophirofoxInlineAddLinks(config, onClick) {
             evt.preventDefault();
             onClick(ophirofoxInlineSearchTerms(europresseLink));
         };
-        europresseLink.after(a);
+        placeLink(europresseLink, a);
     }
 }
 
@@ -237,7 +242,8 @@ function ophirofoxInlineAddLinks(config, onClick) {
  * @param {{isArticle: () => boolean, isPaywalled: () => boolean,
  *   article: () => {title:string, sources:string[]}, captions: () => string[],
  *   ignore: (text:string) => boolean, visibleParagraphs: () => string[], insertionPoint: () => Element,
- *   placeOffer: (offer:Element) => void, uncover: () => void, unlock: () => void,
+ *   placeOffer: (offer:Element) => void, placeLink: (europresseLink:Element, link:Element) => void,
+ *   uncover: () => void, unlock: () => void,
  *   replaceLastParagraph: (text:string) => void,
  *   render: (block:{type:string, text:string}) => Element}} adapter
  */
@@ -265,19 +271,23 @@ async function ophirofoxInlineStart(adapter) {
         loading = false;
     };
 
-    // L'article (chargé en différé sur certains sites), le paywall et les liens d'Ophirofox
-    // apparaissent après le chargement de la page
-    let offered = false;
+    // « Lire ici » suit le lien d'Ophirofox : chaque site sait déjà quand l'ajouter (après
+    // le chargement différé de l'article ou du paywall, au changement d'article sans
+    // rechargement de la page…)
+    let url = location.href;
     const addLinks = () => {
+        if (!document.querySelector("a.ophirofox-europresse:not(.ophirofox-inline-link):not([data-ophirofox-inline])")) return;
         if (!adapter.isArticle() || !adapter.isPaywalled()) return;
-        if (!offered) {
-            offered = true;
+        // Nouvel article sans rechargement de la page : la recherche repart de zéro
+        if (location.href !== url) {
+            url = location.href;
+            attempt = null;
+        }
+        if (!attempt && !document.getElementById("ophirofox-inline-offer")) {
             ophirofoxInlineOffer(adapter, config, load);
         }
-        ophirofoxInlineAddLinks(config, load);
+        ophirofoxInlineAddLinks(config, load, adapter.placeLink);
     };
-    const observer = new MutationObserver(addLinks);
-    observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => observer.disconnect(), 10000);
+    new MutationObserver(addLinks).observe(document.body, { childList: true, subtree: true });
     addLinks();
 }
