@@ -641,10 +641,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/le-telegramme.js"
+        "content_scripts/le-telegramme.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/le-telegramme.js"
       ],
       "css": [
-        "content_scripts/le-telegramme.css"
+        "content_scripts/le-telegramme.css",
+        "inline/inline.css"
       ]
     },
     {
