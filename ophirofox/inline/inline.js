@@ -72,6 +72,13 @@ function ophirofoxInlineAlign(pageParagraphs, blocks) {
             const next = normalizedBlocks.findIndex((block, i) => i >= start && ophirofoxInlineSimilarity(block, later) > 0.6);
             if (next !== -1) start = next + 1;
         }
+        // Dernier paragraphe coupé trop court pour être cherché (« Las ! La semaine ») : il est
+        // remplacé par le bloc qui commence comme lui
+        const last = ophirofoxInlineNormalize(pageParagraphs.at(-1) || "").replace(/[.…\s]+$/, "");
+        if (!truncated && v === visible.length - 1 && last.length > 0 && last.length <= 20 &&
+            normalizedBlocks[start]?.startsWith(last)) {
+            return { start: start + 1, replaceIndex: start };
+        }
         return { start, replaceIndex: truncated ? index : null };
     }
     return null;

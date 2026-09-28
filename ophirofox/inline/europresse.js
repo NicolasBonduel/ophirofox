@@ -270,7 +270,8 @@ async function ophirofoxInlineSearch({ field, match }, { keywords, publishedTime
 function ophirofoxInlineIsHeading(paragraph, text) {
     if (text.length > 120) return false;
     const bold = paragraph.querySelector('b, strong, em[style*="bold"]');
-    if (bold && bold.textContent.trim() === text) return true;
+    // Même normalisation que text (espaces insécables avant « ? »…)
+    if (bold && bold.textContent.replace(/\s+/g, " ").trim() === text) return true;
     return !/[.!?…:;»")\]]$/.test(text) && !/[.!?] /.test(text);
 }
 
