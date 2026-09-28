@@ -471,10 +471,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lobs.js"
+        "content_scripts/lobs.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/lobs.js"
       ],
       "css": [
-        "content_scripts/lobs.css"
+        "content_scripts/lobs.css",
+        "inline/inline.css"
       ]
     },
     {
