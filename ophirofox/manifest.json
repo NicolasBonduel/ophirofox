@@ -399,10 +399,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/sudouest.js"
+        "content_scripts/sudouest.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/sudouest.js"
       ],
       "css": [
-        "content_scripts/sudouest.css"
+        "content_scripts/sudouest.css",
+        "inline/inline.css"
       ]
     },
     {
