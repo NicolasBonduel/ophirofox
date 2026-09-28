@@ -222,10 +222,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lacroix.js"
+        "content_scripts/lacroix.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/lacroix.js"
       ],
       "css": [
-        "content_scripts/lacroix.css"
+        "content_scripts/lacroix.css",
+        "inline/inline.css"
       ]
     },
     {
