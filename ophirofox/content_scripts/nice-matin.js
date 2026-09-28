@@ -1,6 +1,6 @@
 async function createLink() {
     const a = await ophirofoxEuropresseLink();
-    a.classList.add();
+    a.classList.add("btn", "btn-warning", "rounded-2", "text-nowrap", "text-uppercase", "fw-bold", "fs-9", "p-05");
     return a;
 }
 

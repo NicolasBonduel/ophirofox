@@ -575,10 +575,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/nice-matin.js"
+        "content_scripts/nice-matin.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/nice-matin.js"
       ],
       "css": [
-        "content_scripts/nice-matin.css"
+        "content_scripts/nice-matin.css",
+        "inline/inline.css"
       ]
     },
     {
