@@ -539,10 +539,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lopinion.js"
+        "content_scripts/lopinion.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/lopinion.js"
       ],
       "css": [
-        "content_scripts/lopinion.css"
+        "content_scripts/lopinion.css",
+        "inline/inline.css"
       ]
     },
     {
