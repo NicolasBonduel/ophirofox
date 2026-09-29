@@ -51,9 +51,16 @@ function loginTab({ url, proxyBase }, articleTab) {
     chrome.tabs.onUpdated.addListener(onUpdated);
     chrome.tabs.onRemoved.addListener(onRemoved);
 
-    chrome.tabs.create({ url, index: articleTab.index + 1, openerTabId: articleTab.id }, (tab) => {
-      tabId = tab.id;
-    });
+    // Firefox Android refuse index et openerTabId : on réessaie avec l'URL seule
+    const created = (tab) => {
+      if (tab && !chrome.runtime.lastError) tabId = tab.id;
+      else chrome.tabs.create({ url }, (tab) => { tabId = tab?.id; });
+    };
+    try {
+      chrome.tabs.create({ url, index: articleTab.index + 1, openerTabId: articleTab.id }, created);
+    } catch (_) {
+      created(null);
+    }
   });
 }
 
