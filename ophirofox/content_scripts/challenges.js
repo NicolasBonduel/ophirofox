@@ -24,24 +24,33 @@ function linkExists() {
     return !!existingLink;
 }
 
+// Lien en cours de création : createLink est asynchrone, et d'autres changements de la page
+// passeraient la vérification entre-temps (lien ajouté deux fois)
+let injecting = false;
+
 // Fonction pour injecter le lien
 async function injectLink() {
     // Vérification plus stricte - ne pas injecter si le lien existe déjà
-    if (linkExists()) {
+    if (injecting || linkExists()) {
         // console.log('Link already exists, skipping injection');
         return false;
     }
     
     const premiumDiv = document.querySelector("div.views-article__premium");
     if (premiumDiv) {
-        const link = await createLink();
-        
-        // S'assurer que la classe est bien définie
-        if (!link.classList.contains('ophirofox-link')) {
-            link.classList.add('ophirofox-link');
+        injecting = true;
+        try {
+            const link = await createLink();
+
+            // S'assurer que la classe est bien définie
+            if (!link.classList.contains('ophirofox-link')) {
+                link.classList.add('ophirofox-link');
+            }
+
+            premiumDiv.before(link);
+        } finally {
+            injecting = false;
         }
-        
-        premiumDiv.before(link);
 
         return true;
     }
