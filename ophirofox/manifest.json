@@ -201,7 +201,15 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/monde-diplo.js"
+        "content_scripts/monde-diplo.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/monde-diplo.js"
+      ],
+      "css": [
+        "inline/inline.css"
       ]
     },
     {
