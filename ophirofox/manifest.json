@@ -809,10 +809,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/challenges.js"
+        "content_scripts/challenges.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/challenges.js"
       ],
       "css": [
-        "content_scripts/challenges.css"
+        "content_scripts/challenges.css",
+        "inline/inline.css"
       ]
     },
     {
