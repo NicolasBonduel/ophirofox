@@ -16,7 +16,7 @@ let linkAddedForCurrentUrl = false;
 // Fonction pour vérifier si le lien existe déjà
 function linkExists() {
     // Vérification plus précise - s'assurer qu'on cherche le bon élément
-    // « Lire ici » (mode du même nom) a les mêmes classes : seul le lien d'Ophirofox compte
+    // « Compléter » (mode « Lire en place ») a les mêmes classes : seul le lien d'Ophirofox compte
     const existingLink = document.querySelector('.ophirofox-link:not(.ophirofox-inline-link)');
     
     // Ajouter un log pour déboguer

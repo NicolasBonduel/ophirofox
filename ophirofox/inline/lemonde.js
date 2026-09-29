@@ -14,6 +14,10 @@ ophirofoxInlineSite({
     paywallText: /il vous reste|réservée (aux|à nos) abonnés/i,
     offer: "section.paywall .paywall__container",
 
+    // « Article réservé aux abonnés » partage sa ligne avec « Lire plus tard » : les deux liens
+    // passent sur leur propre ligne, en dessous
+    links: { after: ".article__meta:has(.ds-article-status--premium)" },
+
     // Le paywall est remonté sur la fin de l'article (top: -57px en format long) : on ajoute
     // autant d'espace sous le texte, sans déplacer le paywall
     uncover() {

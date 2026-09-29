@@ -75,3 +75,10 @@
     -webkit-mask-image: none !important;
     max-height: none !important;
 }
+
+/* Conteneur des deux liens, pour les sites qui le demandent (site.links) */
+.ophirofox-inline-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}

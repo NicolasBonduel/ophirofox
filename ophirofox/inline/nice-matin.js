@@ -13,6 +13,10 @@ ophirofoxInlineSite({
     // .qiota contient le bloc d'abonnement et le fondu (.qiota_hidden::before)
     paywall: ".qiota_reserve > .article-blocks-deferred, .qiota",
 
+    // Les deux liens sortent de l'étiquette « Réservé aux abonnés » : à la fin de sa ligne,
+    // après « Voir nos offres »
+    links: { append: "div:has(> .tag-premium)" },
+
     override: {
         // Entre le texte et le bloc d'abonnement : le site remplace le contenu de .qiota
         // après le chargement de la page

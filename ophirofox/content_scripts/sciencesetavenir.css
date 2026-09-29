@@ -24,8 +24,24 @@
     text-decoration: none;
 }
 
-/* « Lire ici » : le fondu du bloc d'abonnement recouvre la fin du texte, où s'affichent la
+/* « Lire en place » : le fondu du bloc d'abonnement recouvre la fin du texte, où s'affichent la
    recherche et « Élargir la recherche ». Il disparaît dès que la recherche commence */
 body:has(#ophirofox-inline-status) #poool-widget::before {
     display: none !important;
+}
+
+/* « Lire en place » : les deux liens sur leur propre ligne, sous l'étiquette « Abonnés », et dans
+   son style */
+.ophirofox-inline-links {
+    clear: both;
+    justify-content: flex-end;
+    gap: 6px;
+    padding-top: 8px;
+}
+
+.ophirofox-inline-links .ophirofox-europresse {
+    margin: 0;
+    padding: 4px 6px 2px;
+    border: 0;
+    background: #fcc525;
 }

@@ -1,4 +1,4 @@
-// Mode « Lire ici » : les requêtes vers le proxy Europresse partent de la page
+// Mode « Lire en place » : les requêtes vers le proxy Europresse partent de la page
 // d'arrière-plan pour porter les cookies de session de l'établissement. Le HTML est
 // analysé par le script de contenu.
 

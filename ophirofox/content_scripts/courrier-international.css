@@ -2,7 +2,22 @@
     margin-left: 10px;
 }
 
-/* Fondu sur la fin du texte, retiré une fois l'article complété par « Lire ici » */
+/* Fondu sur la fin du texte, retiré une fois l'article complété */
 .article-text.ophirofox-inline-unlocked::before {
+    display: none !important;
+}
+
+/* « Lire en place » : les deux liens deviennent des pastilles jaunes, sans le cadenas de
+   « Réservé aux abonnés » */
+.ophirofox-europresse[data-ophirofox-inline],
+.ophirofox-europresse.ophirofox-inline-link {
+    background-color: #ffde00;
+    color: #000;
+    border-radius: 100px;
+    padding: 2px 12px;
+}
+
+.ophirofox-europresse[data-ophirofox-inline]::before,
+.ophirofox-europresse.ophirofox-inline-link::before {
     display: none !important;
 }

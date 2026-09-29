@@ -19,6 +19,8 @@ const DEFAULT_SETTINGS = {
   open_links_new_tab: false,
   auto_open_link: false,
   add_search_menu: false,
+  // « Lire en place » (bêta) : compléter les articles dans la page, via Europresse
+  inline_mode: false,
 };
 
 let current_settings = DEFAULT_SETTINGS;
@@ -92,7 +94,7 @@ async function ophirofoxEuropresseLink(keywords, { publishedTime } = {}) {
   const a = document.createElement("a");
   a.textContent = "Lire sur Europresse";
   a.className = "ophirofox-europresse";
-  // Repris par le mode « Lire ici » (inline/inline.js)
+  // Repris par le mode « Lire en place » (inline/inline.js)
   a.dataset.keywords = keywords;
   a.dataset.publishedTime = publishedTime;
   const setKeywords = () => new Promise(accept => {

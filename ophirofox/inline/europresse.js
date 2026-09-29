@@ -1,4 +1,4 @@
-// Mode « Lire ici » : recherche l'article sur Europresse via le proxy de l'établissement
+// Mode « Lire en place » : recherche l'article sur Europresse via le proxy de l'établissement
 // et en extrait le texte. Chargé après content_scripts/config.js (ophirofox_config,
 // permissionForPartner) et content_scripts/europresse_query.js. Le HTML d'Europresse
 // n'est pas documenté : les sélecteurs correspondent au site tel qu'il était en septembre 2026.
@@ -20,11 +20,15 @@ function ophirofoxInlineDebug(...args) {
 }
 
 /**
- * Configuration du partenaire pour le mode « Lire ici »
+ * Configuration du partenaire pour le mode « Lire en place »
  * @returns {Promise<{name:string, proxyBase:string, loginUrl:string, sessionPath:string} | null>}
  * null si le partenaire n'est pas un proxy EZproxy
  */
 async function ophirofoxInlineConfig() {
+    // Mode en bêta : à activer dans les préférences de l'extension
+    const settings = await getSettings();
+    if (!settings.inline_mode) return null;
+
     const partner = await ophirofox_config;
     if (!partner || !OPHIROFOX_INLINE_EZPROXY_LOGIN.test(partner.AUTH_URL)) return null;
 

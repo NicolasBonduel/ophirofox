@@ -16,6 +16,8 @@ ophirofoxInlineSite({
     // Liens vers d'autres articles, ajoutés dans le texte
     skip: /^a lire aussi/i,
     paywall: "#poool-widget",
+    // Sous le bandeau « Ce contenu est réservé aux abonnés », pas dedans
+    links: { after: "div.bg-premium-10" },
 
     // Le bloc d'abonnement est remonté sur la fin du texte, avec un dégradé blanc : on le
     // remet à sa place

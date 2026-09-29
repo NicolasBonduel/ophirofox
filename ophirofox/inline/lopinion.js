@@ -18,4 +18,7 @@ ophirofoxInlineSite({
     uncover() {
         document.querySelector(".paywall-premium")?.classList.add("ophirofox-inline-uncovered");
     },
+
+    // Au-dessus de la date de publication, côte à côte
+    links: { before: ".Article-meta > .Article-date" },
 });

@@ -13,14 +13,7 @@ ophirofoxInlineSite({
     paywall: ".qiota_reserve, .qiota",
     // Après le texte : le bloc d'abonnement est coupé par une hauteur fixe
     offer: null,
-
-    override: {
-        // L'en-tête est une grille, un bouton par ligne : les deux liens partagent un conteneur
-        // pour être côte à côte
-        placeLink(europresseLink, link) {
-            const box = document.createElement("div");
-            europresseLink.before(box);
-            box.append(europresseLink, link);
-        },
-    },
+    // L'en-tête est une grille, un bouton par ligne : les deux liens partagent un conteneur
+    // pour être côte à côte
+    links: {},
 });

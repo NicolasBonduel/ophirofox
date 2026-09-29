@@ -1,7 +1,8 @@
 function injectButton() {
     const banner = document.querySelector('.bg-premium-10');
     if (!banner) return;
-    if (banner.querySelector('.ophirofox-europresse')) return;
+    // Dans le bandeau, ou à côté (« Lire en place » y déplace le lien)
+    if (banner.parentElement.querySelector('.ophirofox-europresse')) return;
     const premiumBanner = [...banner.querySelectorAll('p')]
         .find(p => p.textContent.trim().startsWith('Ce contenu est réservé aux abonnés'));
     if (!premiumBanner) return;

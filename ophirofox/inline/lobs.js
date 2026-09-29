@@ -10,6 +10,9 @@ ophirofoxInlineSite({
     heading: ".article-page__body .content > h2, .article-page__body .content > h3",
     newHeading: { tag: "h2", className: "node__heading latino-800m latino-lg-1400e text-grey-800 pb-8 pb-md-16" },
     paywall: ".paywall2025",
+    // L'en-tête est une colonne, un lien par ligne : les deux liens partagent un conteneur
+    // pour être côte à côte
+    links: {},
 
     // Le bloc d'abonnement dessine un fondu (::before) sur la fin du texte
     uncover() {

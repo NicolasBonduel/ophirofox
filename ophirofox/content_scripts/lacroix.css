@@ -23,3 +23,24 @@
 .above-image-wrapper {
     align-items: center;
 }
+
+/* « Lire en place » : les deux liens à côté de la pastille « Réservé aux abonnés », dans son style
+   (leur texte est trop long pour la largeur fixe) */
+.ophirofox-inline-links {
+    gap: 8px;
+    margin: 0 auto 0 8px;
+    align-self: flex-start;
+}
+
+.ophirofox-inline-links .ophirofox-europresse {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 100px;
+    background-color: #f1f1f1;
+    color: #1a1a1a !important;
+    font-size: 14px;
+    line-height: 20px;
+}

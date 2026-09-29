@@ -11,4 +11,6 @@ ophirofoxInlineSite({
     heading: ".poool-content .visible-premium > h2",
     newHeading: { tag: "h2", className: "article-subtitle" },
     paywall: "#poool-widget",
+    // Sous la pastille « Réservé aux abonnés », pas dedans
+    links: { after: ".badge-premium" },
 });

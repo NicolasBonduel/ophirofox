@@ -5,7 +5,7 @@
     margin: 0 8px 8px 0;
 }
 
-/* « Lire ici » : le fondu recouvre tout le texte visible. Le bandeau passe au-dessus, et le
+/* « Lire en place » : le fondu recouvre tout le texte visible. Le bandeau passe au-dessus, et le
    fondu disparaît dès que la recherche commence */
 #ophirofox-inline-offer {
     position: relative;

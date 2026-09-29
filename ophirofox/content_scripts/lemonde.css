@@ -6,3 +6,14 @@
 #js-message-register{
     display: none;
 }
+
+/* « Lire en place » : les deux liens sur leur propre ligne, sous « Article réservé aux abonnés » */
+.ophirofox-inline-links {
+    margin-top: 8px;
+    font-size: 1.4rem;
+    text-align: left;
+}
+
+.ophirofox-inline-links .ophirofox-europresse:first-child {
+    margin-left: 0;
+}

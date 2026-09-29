@@ -13,3 +13,24 @@
     font-weight: 700;
     height: auto;
 }
+
+/* « Lire en place » : les deux liens sous la pastille « Réservé aux abonnés », dans son style */
+.ophirofox-inline-links {
+    order: 1;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Le site retire les marges de l'en-tête (avec !important) */
+.badge-premium + .ophirofox-inline-links {
+    margin-top: 8px !important;
+}
+
+.ophirofox-inline-links .ophirofox-europresse {
+    margin: 0;
+    padding: 4px 10px;
+    border-radius: 32px;
+    background-color: #fbf3cc;
+    font-weight: 400;
+    text-transform: none;
+}

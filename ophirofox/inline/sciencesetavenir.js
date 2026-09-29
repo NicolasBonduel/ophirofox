@@ -13,4 +13,7 @@ ophirofoxInlineSite({
     paywall: "#poool-widget, .corps > .user-paying-content",
     // En haut du bloc d'abonnement, pas dans la suite masquée
     offer: "#poool-widget",
+
+    // « Abonnés » reste sur la ligne de l'auteur : les deux liens passent en dessous
+    links: { after: ".article-abo-tag" },
 });

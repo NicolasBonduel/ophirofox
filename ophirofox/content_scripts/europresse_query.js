@@ -1,5 +1,5 @@
 // Construction de la requête Europresse, partagée entre europresse_search.js (recherche
-// dans l'onglet Europresse) et le mode « Lire ici » (recherche en arrière-plan)
+// dans l'onglet Europresse) et le mode « Lire en place » (recherche en arrière-plan)
 
 /**
  * Nettoie les mots clés pour le moteur de recherche d'Europresse

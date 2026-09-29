@@ -12,6 +12,8 @@ ophirofoxInlineSite({
     // Dans les entretiens, le premier paragraphe est une question (article-paragraph--question)
     newParagraph: "article-paragraph",
     paywall: ".article-content > .paywall",
+    // Hors de la pastille « Réservé aux abonnés », à côté
+    links: { after: ".article-premium" },
 
     // Le fondu est sur le dernier paragraphe du texte coupé (article-content--excerpt) : il
     // passerait sur le dernier paragraphe ajouté

@@ -1,4 +1,4 @@
-// Mode « Lire ici » : ajoute un lien à côté de « Lire sur Europresse » qui complète
+// Mode « Lire en place » : ajoute un lien à côté de « Lire sur Europresse » qui complète
 // l'article dans la page. Chaque site fournit un adaptateur (voir inline/lemonde.js).
 // Rien n'est demandé à Europresse avant le clic : chaque recherche et chaque article
 // consulté comptent comme une consultation sur le compte de l'établissement.
@@ -6,7 +6,7 @@
 // Europresse reprend les articles avec un délai : un article récent peut ne pas y être encore
 const OPHIROFOX_INLINE_RECENT_DAYS = 2;
 
-// Chaque clic (« Lire ici », puis « Élargir la recherche ») fait au plus une recherche et ouvre
+// Chaque clic (« Compléter », puis « Élargir la recherche ») fait au plus une recherche et ouvre
 // au plus un article :
 // 1. titre et chapeau, avec les mots clés d'Ophirofox (titre actuel de la page)
 // 2. titre et chapeau, avec quelques mots de l'URL : elle garde souvent le titre d'origine,
@@ -228,23 +228,29 @@ function ophirofoxInlineOffer(adapter, config, onClick) {
     offer.className = "ophirofox-inline-status ophirofox-inline-offer";
     offer.innerHTML =
         `Chercher la suite de cet article sur Europresse (${ophirofoxInlineEscape(config.name)}) ` +
-        `<button type="button" class="ophirofox-inline-button">Lire ici</button>`;
+        `<button type="button" class="ophirofox-inline-button">Compléter</button>`;
     offer.querySelector("button").onclick = () => onClick(ophirofoxInlineSearchTerms());
     adapter.placeOffer(offer);
 }
 
+// Textes des deux liens : « Lire sur Europresse » devient « Chercher (Europresse) », pour que les
+// deux ne se ressemblent pas (le bandeau, lui, dit déjà « sur Europresse »)
+const OPHIROFOX_INLINE_LABEL = "Compléter (Europresse)";
+const OPHIROFOX_INLINE_EUROPRESSE_LABEL = "Chercher (Europresse)";
+
 /**
- * Ajoute « Lire ici » après chaque lien « Lire sur Europresse » d'Ophirofox, avec les mêmes
+ * Ajoute « Compléter » après chaque lien « Lire sur Europresse » d'Ophirofox, avec les mêmes
  * classes pour que les deux se ressemblent
  */
 function ophirofoxInlineAddLinks(config, onClick, placeLink) {
     for (const europresseLink of document.querySelectorAll("a.ophirofox-europresse:not(.ophirofox-inline-link)")) {
         if ("ophirofoxInline" in europresseLink.dataset) continue;
         europresseLink.dataset.ophirofoxInline = "";
+        europresseLink.textContent = OPHIROFOX_INLINE_EUROPRESSE_LABEL;
         const a = document.createElement("a");
         a.href = "#";
         a.className = europresseLink.className + " ophirofox-inline-link";
-        a.textContent = "Lire ici";
+        a.textContent = OPHIROFOX_INLINE_LABEL;
         a.title = `Afficher la suite de l'article dans la page, via Europresse (${config.name})`;
         a.onclick = function (evt) {
             evt.preventDefault();
@@ -255,7 +261,7 @@ function ophirofoxInlineAddLinks(config, onClick, placeLink) {
 }
 
 /**
- * Démarre le mode « Lire ici » sur la page. Les sites passent par ophirofoxInlineSite
+ * Démarre le mode « Lire en place » sur la page. Les sites passent par ophirofoxInlineSite
  * (inline/site.js), qui construit cet adaptateur à partir de leur description.
  * @param {{isArticle: () => boolean, isPaywalled: () => boolean,
  *   article: () => {title:string, sources:string[]}, captions: () => string[],
@@ -279,17 +285,17 @@ async function ophirofoxInlineStart(adapter) {
         const links = () => document.querySelectorAll("a.ophirofox-inline-link");
         links().forEach(link => link.textContent = "Chargement…");
         // En cas de succès, ophirofoxInlineLoad retire les liens
-        // Un nouveau clic sur « Lire ici » reprend là où la recherche s'est arrêtée
+        // Un nouveau clic sur « Compléter » reprend là où la recherche s'est arrêtée
         if (!attempt || attempt.step >= OPHIROFOX_INLINE_STEPS.length) {
             attempt = { search, step: 0, tried: new Set(), results: {} };
         }
         if (!await ophirofoxInlineLoad(adapter, config, attempt)) {
-            links().forEach(link => link.textContent = "Lire ici");
+            links().forEach(link => link.textContent = OPHIROFOX_INLINE_LABEL);
         }
         loading = false;
     };
 
-    // « Lire ici » suit le lien d'Ophirofox : chaque site sait déjà quand l'ajouter (après
+    // « Compléter » suit le lien d'Ophirofox : chaque site sait déjà quand l'ajouter (après
     // le chargement différé de l'article ou du paywall, au changement d'article sans
     // rechargement de la page…)
     let url = location.href;

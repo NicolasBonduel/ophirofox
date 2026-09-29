@@ -5,6 +5,7 @@ const missing_permissions_btn = document.getElementById("missing_permissions");
 const openLinksCheckbox = document.getElementById("open_links_new_tab");
 const autoOpenLinkCheckbox = document.getElementById("auto_open_link");
 const addSearchMenuCheckbox = document.getElementById("add_search_menu");
+const inlineModeCheckbox = document.getElementById("inline_mode");
 
 let settings = {};
 
@@ -45,6 +46,7 @@ getSettings().then((retrievedSettings) => {
   openLinksCheckbox.checked = settings.open_links_new_tab || false;
   autoOpenLinkCheckbox.checked = settings.auto_open_link || false;
   addSearchMenuCheckbox.checked = settings.add_search_menu || false;
+  inlineModeCheckbox.checked = settings.inline_mode || false;
 });
 
 // Gestion des modifications de la case à cocher
@@ -60,6 +62,11 @@ autoOpenLinkCheckbox.onchange = () => {
 
 addSearchMenuCheckbox.onchange = () => {
   settings.add_search_menu = addSearchMenuCheckbox.checked;
+  setSettings(settings);
+};
+
+inlineModeCheckbox.onchange = () => {
+  settings.inline_mode = inlineModeCheckbox.checked;
   setSettings(settings);
 };
 

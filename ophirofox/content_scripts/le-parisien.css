@@ -13,3 +13,9 @@
     display: inline-block;
     width: 135px;
 }
+
+/* « Lire en place » : les deux liens ont un texte plus long, la largeur fixe ne suffit plus */
+.ophirofox-europresse[data-ophirofox-inline],
+.ophirofox-europresse.ophirofox-inline-link {
+    width: auto;
+}

@@ -1,8 +1,8 @@
-// Mode « Lire ici » : construit l'adaptateur d'un site à partir de sa description
+// Mode « Lire en place » : construit l'adaptateur d'un site à partir de sa description
 // (sélecteurs et éditions Europresse), voir inline/lemonde.js et inline/lefigaro.js
 
 /**
- * Déclare un site pris en charge par le mode « Lire ici » et le démarre
+ * Déclare un site pris en charge par le mode « Lire en place » et le démarre
  * @param {object} site
  * @param {string} site.name - nom court, repris dans les messages de la console
  * @param {string[]} site.sources - éditions Europresse à privilégier, par ordre de préférence
@@ -22,6 +22,10 @@
  * texte correspond comptent
  * @param {string|null} [site.offer] - conteneur en haut duquel placer le bandeau ; par défaut,
  * le premier élément de site.paywall ; null pour le placer après le texte visible
+ * @param {{before?:string, after?:string, append?:string, prepend?:string}} [site.links] - si
+ * présent, les deux liens partagent un conteneur (.ophirofox-inline-links), placé par rapport
+ * à l'élément donné (par exemple { after: ".article-premium" }) ; {} pour le laisser à la place
+ * du lien d'Ophirofox
  * @param {() => void} [site.uncover] - retire ce qui recouvre la fin du texte visible (fondu,
  * paywall remonté…), appelé avant d'afficher le bandeau ou l'état du chargement
  * @param {object} [site.override] - méthodes de l'adaptateur à remplacer pour un site qui ne
@@ -67,8 +71,17 @@ function ophirofoxInlineSite(site) {
             else adapter.insertionPoint().after(offer);
         },
 
-        // « Lire ici » à côté du lien d'Ophirofox, avec les mêmes classes
-        placeLink: (europresseLink, link) => europresseLink.after(link),
+        // « Compléter » à côté du lien d'Ophirofox, avec les mêmes classes
+        placeLink(europresseLink, link) {
+            if (!site.links) return europresseLink.after(link);
+            const box = document.createElement("div");
+            box.className = "ophirofox-inline-links";
+            const [where, selector] = Object.entries(site.links)[0] || [];
+            const target = selector && document.querySelector(selector);
+            if (target) target[where](box);
+            else europresseLink.before(box);
+            box.append(europresseLink, link);
+        },
 
         uncover: site.uncover || (() => { }),
 

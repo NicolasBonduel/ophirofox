@@ -21,8 +21,15 @@
     background-color: rgb(255 228 88 / var(--tw-bg-opacity, 1));
 }
 
-/* « Lire ici » : le fondu du bloc d'abonnement recouvre la fin du texte, où s'affichent la
+/* « Lire en place » : le fondu du bloc d'abonnement recouvre la fin du texte, où s'affichent la
    recherche et « Élargir la recherche ». Il disparaît dès que la recherche commence */
 body:has(#ophirofox-inline-status) #poool-widget::before {
     display: none !important;
+}
+
+/* « Lire en place » : avec deux liens, la ligne passe à la suivante plutôt que d'écraser
+   « Article réservé aux abonnés » */
+div:has(> .ophirofox-inline-link) {
+    flex-wrap: wrap;
+    align-items: center;
 }

@@ -2,13 +2,13 @@
     margin-left: 1em;
 }
 
-/* « Lire ici » : texte coupé par une hauteur fixe (style en ligne) */
+/* « Lire en place » : texte coupé par une hauteur fixe (style en ligne) */
 .qiota_reserve.ophirofox-inline-unlocked {
     height: auto !important;
     overflow: visible !important;
 }
 
-/* « Lire ici » : bandeau entre le texte et le bloc d'abonnement, que le site déplace juste
+/* « Lire en place » : bandeau entre le texte et le bloc d'abonnement, que le site déplace juste
    après le texte, et au-dessus du fondu de ce bloc */
 .qiota_reserve ~ * {
     order: 1;

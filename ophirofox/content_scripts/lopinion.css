@@ -9,3 +9,21 @@
     border-radius: 5px;
     display: inline-block;
 }
+
+/* « Lire en place » : les deux liens côte à côte, au-dessus de la date, dans le style de la
+   pastille d'abonnement (« 1€/mois… ») */
+.ophirofox-inline-links {
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ophirofox-inline-links .ophirofox-europresse {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 15px;
+    border-radius: 20px;
+    background-color: #ffc000;
+    color: #0f0f15;
+    font: 600 14px/16px Inter, Arial, sans-serif;
+}

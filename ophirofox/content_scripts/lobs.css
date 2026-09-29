@@ -21,3 +21,8 @@
 .ophirofox-europresse:hover, .ophirofox-europresse:active {
     background-color: #FFC70F;
 }
+
+/* « Lire en place » : les deux liens côte à côte */
+.ophirofox-inline-links {
+    gap: 12px;
+}

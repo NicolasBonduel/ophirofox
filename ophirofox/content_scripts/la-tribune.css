@@ -7,3 +7,21 @@
     border-radius: 1px;
     display: inline-block;
 }
+
+/* « Lire en place » : les deux liens sous le bandeau « Réservé aux abonnés », dans le style du
+   bouton « S'abonner » du site */
+.ophirofox-inline-links {
+    gap: 8px;
+    margin: -12px 0 24px;
+}
+
+.ophirofox-inline-links .ophirofox-europresse {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 3.75px;
+    background-color: #ffc612;
+    color: #0e1e3f;
+    font: 600 13px/18px "Inter", "Inter Fallback", sans-serif;
+}

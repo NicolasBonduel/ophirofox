@@ -11,8 +11,10 @@ function buttonExists() {
     return document.querySelector('.europresse-button') !== null;
 }
 
+let creating = false; // Lien en cours de création : l'observateur ne doit pas en ajouter un autre
+
 async function createButton() {
-    if (buttonExists()) return false; // Bouton déjà présent
+    if (buttonExists() || creating) return false; // Bouton déjà présent
     
     const banner = findPremiumBanner();
     if (!banner) return false; // Pas d'article premium
@@ -20,10 +22,15 @@ async function createButton() {
     const anchor = findButtonContainer();
     if (!anchor) return false; // Container non trouvé
     
-    const newDiv = document.createElement('div');
-    newDiv.classList.add('europresse-button');
-    anchor.appendChild(newDiv);
-    newDiv.appendChild(await ophirofoxEuropresseLink());
+    creating = true;
+    try {
+        // Le lien lui-même a le style de bouton
+        const link = await ophirofoxEuropresseLink();
+        link.classList.add('europresse-button');
+        anchor.appendChild(link);
+    } finally {
+        creating = false;
+    }
     
     console.log('Bouton Europresse ajouté');
     return true;
