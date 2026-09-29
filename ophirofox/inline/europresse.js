@@ -278,9 +278,10 @@ function ophirofoxInlineIsHeading(paragraph, text) {
     const bold = paragraph.querySelector('b, strong, em[style*="bold"]');
     // Même normalisation que text (espaces insécables avant « ? »…)
     if (bold && bold.textContent.replace(/\s+/g, " ").trim() === text) return true;
-    // Intertitre qui n'est qu'une citation (« Plus d'argent à se faire avec des chiens qu'avec
-    // des hamsters ») : on regarde la ponctuation de la citation
-    const inner = text.replace(/^«\s*(.*?)\s*»$/, "$1");
+    // Intertitre avec des guillemets, où qu'ils soient (Procès en « juppéisme », « Plus d'argent à
+    // se faire avec des chiens qu'avec des hamsters ») : ceux du début et de la fin sont ignorés,
+    // pour regarder la ponctuation qu'ils entourent
+    const inner = text.replace(/^[«"“]\s*/, "").replace(/\s*[»"”]$/, "");
     return !/[.!?…:;»")\]]$/.test(inner) && !/[.!?] /.test(inner);
 }
 
