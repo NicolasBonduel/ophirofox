@@ -1,6 +1,25 @@
-.ophirofox-europresse{
+/* Boutons à droite de l'étiquette « Abonnés », qui flotte à droite, dans son style */
+.ophirofox-buttons {
+    float: right;
+}
+
+/* Le bloc contient ses éléments flottants : sinon, quand ils passent sous la date, ils
+   débordent sur la ligne de séparation */
+.article-infos:has(.ophirofox-buttons) {
+    display: flow-root;
+}
+
+.ophirofox-europresse {
     display: inline-block;
-    padding: 3px 5px 1px 5px;
-    color: #000000!important;
-    border: #f05246 1px solid;
- }
+    margin-left: 6px;
+    padding: 3px 7px 1px;
+    background: #fff;
+    border: 1px solid #fcc525;
+    color: #101010 !important;
+    font-family: "Electrolize", Helvetica, arial, sans-serif;
+    font-size: 11px;
+    line-height: 18.2px;
+    letter-spacing: 1.32px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
