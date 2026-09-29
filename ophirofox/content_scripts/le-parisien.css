@@ -14,7 +14,7 @@
     width: 135px;
 }
 
-/* « Lire en place » : les deux liens ont un texte plus long, la largeur fixe ne suffit plus */
+/* « Lire en place » : la largeur fixe est trop étroite pour le texte des deux liens */
 .ophirofox-europresse[data-ophirofox-inline],
 .ophirofox-europresse.ophirofox-inline-link {
     width: auto;

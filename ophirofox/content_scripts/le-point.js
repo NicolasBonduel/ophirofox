@@ -3,8 +3,7 @@ async function createLink() {
 }
 
 async function onLoad() {
-    // Le site ne marque plus les articles abonnés dans la page (.abo) : la balise
-    // article:premium le dit
+    // La balise article:premium indique les articles abonnés
     const premium = document.querySelector('meta[property="article:premium"]');
     if (premium?.content !== "true") return;
 
