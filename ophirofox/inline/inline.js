@@ -120,6 +120,17 @@ async function ophirofoxInlineLoad(adapter, config, attempt) {
             attempt.tried.add(candidate.href);
             const alignment = ophirofoxInlineAlign(adapter.visibleParagraphs(), blocks);
             ophirofoxInlineDebug("alignement", candidate.title, alignment);
+            // Europresse a parfois seulement l'aperçu gratuit du site, coupé par « … » (Corse-Matin)
+            const preview = alignment && (blocks.length === alignment.start ||
+                /(\.\.\.|…)(\s*Cet article est paru dans .*)?$/i.test(blocks[blocks.length - 1].text));
+            if (preview) {
+                status.set(
+                    `<a href="${ophirofoxInlineEscape(candidate.href)}" target="_blank">Europresse ` +
+                    `(${ophirofoxInlineEscape(candidate.source)})</a> n'a que le début de l'article.`,
+                    "error"
+                );
+                return false;
+            }
             if (alignment) {
                 adapter.unlock();
                 if (alignment.replaceIndex !== null) adapter.replaceLastParagraph(blocks[alignment.replaceIndex].text);
