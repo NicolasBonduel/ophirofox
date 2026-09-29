@@ -278,11 +278,40 @@ function ophirofoxInlineIsHeading(paragraph, text) {
     const bold = paragraph.querySelector('b, strong, em[style*="bold"]');
     // Même normalisation que text (espaces insécables avant « ? »…)
     if (bold && bold.textContent.replace(/\s+/g, " ").trim() === text) return true;
+    return ophirofoxInlineLooksLikeHeading(text);
+}
+
+// Texte court sans ponctuation de phrase
+function ophirofoxInlineLooksLikeHeading(text) {
+    if (text.length > 120) return false;
     // Intertitre avec des guillemets, où qu'ils soient (Procès en « juppéisme », « Plus d'argent à
     // se faire avec des chiens qu'avec des hamsters ») : ceux du début et de la fin sont ignorés,
     // pour regarder la ponctuation qu'ils entourent
     const inner = text.replace(/^[«"“]\s*/, "").replace(/\s*[»"”]$/, "");
     return !/[.!?…:;»")\]]$/.test(inner) && !/[.!?] /.test(inner);
+}
+
+/**
+ * Texte d'article dont Europresse a collé les paragraphes et les intertitres, sans espace ni
+ * saut de ligne (« …de l'article.La fibromyalgie touche très majoritairement des femmesLa
+ * pathologie… ») : on coupe là où un mot ou une phrase touche une majuscule, puis chaque
+ * morceau court sans ponctuation est un intertitre. Au moins trois minuscules avant la
+ * majuscule, pour ne pas couper les noms (iPhone, McDonald) ; ceux qui en ont plus
+ * (TotalEnergies) peuvent l'être, mais seulement dans ces textes déjà abîmés.
+ * @returns {{type: "heading"|"paragraph", text:string}[]|null} null si le bloc n'est pas collé
+ */
+function ophirofoxInlineSplitGlued(text) {
+    // Seul signe sûr : une fin de phrase collée au mot suivant (article.La), qui n'arrive jamais
+    // dans un texte normal ; pas les sigles (U.S.A.)
+    if (!/[.!?][A-ZÀ-Ý][a-zà-ÿ]/.test(text)) return null;
+    // Un guillemet droit ne ferme que s'il touche le mot d'avant (le "brouillard cérébral"Autant) ;
+    // précédé d'une espace, il ouvre une citation (…du phénomène. "Au total…)
+    const chunks = text.split(/(?<=[a-zà-ÿ]{3}|[.!?…»”]|(?<!\s)")(?=[A-ZÀ-Ý])/);
+    if (chunks.length < 2) return null;
+    return chunks.map(chunk => ({
+        type: ophirofoxInlineLooksLikeHeading(chunk) ? "heading" : "paragraph",
+        text: chunk,
+    }));
 }
 
 /**
@@ -298,7 +327,9 @@ async function ophirofoxInlineFetchArticle(result) {
     for (const paragraph of body.querySelectorAll("p")) {
         const text = paragraph.textContent.replace(/\s+/g, " ").trim();
         if (!text || /^(cet article est paru dans|©)/i.test(text)) continue;
-        blocks.push({ type: ophirofoxInlineIsHeading(paragraph, text) ? "heading" : "paragraph", text });
+        const glued = ophirofoxInlineSplitGlued(text);
+        if (glued) blocks.push(...glued);
+        else blocks.push({ type: ophirofoxInlineIsHeading(paragraph, text) ? "heading" : "paragraph", text });
     }
     ophirofoxInlineDebug("article", result.href, blocks);
     if (blocks.length === 0) throw new Error("texte de l'article vide sur Europresse");
