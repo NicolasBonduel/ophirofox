@@ -372,10 +372,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/lavdn.js"
+        "content_scripts/lavdn.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/lavdn.js"
       ],
       "css": [
-        "content_scripts/lavdn.css"
+        "content_scripts/lavdn.css",
+        "inline/inline.css"
       ]
     },
     {

@@ -1,4 +1,21 @@
 .ophirofox-europresse {
+    display: inline-block !important;
     padding: 8px 12px;
     border-radius: 8px;
+    margin: 0 8px 8px 0;
+}
+
+/* « Lire ici » : le fondu recouvre tout le texte visible. Le bandeau passe au-dessus, et le
+   fondu disparaît dès que la recherche commence */
+#ophirofox-inline-offer {
+    position: relative;
+    z-index: 1;
+}
+r-article--section:has(#ophirofox-inline-status)::before {
+    display: none !important;
+}
+
+/* Le fondu du bloc d'abonnement déborde sur ses liens (« Se connecter ») : les clics passent */
+.qiota_hidden {
+    pointer-events: none;
 }
