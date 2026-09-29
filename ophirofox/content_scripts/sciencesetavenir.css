@@ -23,3 +23,9 @@
     text-transform: uppercase;
     text-decoration: none;
 }
+
+/* « Lire ici » : le fondu du bloc d'abonnement recouvre la fin du texte, où s'affichent la
+   recherche et « Élargir la recherche ». Il disparaît dès que la recherche commence */
+body:has(#ophirofox-inline-status) #poool-widget::before {
+    display: none !important;
+}

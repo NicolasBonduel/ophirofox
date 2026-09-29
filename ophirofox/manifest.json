@@ -898,10 +898,16 @@
       ],
       "js": [
         "content_scripts/config.js",
-        "content_scripts/sciencesetavenir.js"
+        "content_scripts/sciencesetavenir.js",
+        "content_scripts/europresse_query.js",
+        "inline/europresse.js",
+        "inline/inline.js",
+        "inline/site.js",
+        "inline/sciencesetavenir.js"
       ],
       "css":[
-        "content_scripts/sciencesetavenir.css"
+        "content_scripts/sciencesetavenir.css",
+        "inline/inline.css"
       ]
     },
     {
