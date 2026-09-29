@@ -17,6 +17,21 @@ d'être redirigé automatiquement vers une page de recherche Europresse qui cont
 
 ![Capture d'écran animée de démonstration de l'extension](screencast.gif)
 
+## Lire en place (bêta)
+
+Pour les établissements qui passent par un proxy (BNF…), l'extension peut aussi compléter l'article directement dans la page, sans ouvrir Europresse : un second bouton, **Compléter (Europresse)**, cherche l'article sur Europresse et ajoute la suite du texte sous le début affiché par le journal.
+
+Ce mode est désactivé par défaut. Pour l'activer, cochez **Lire en place (bêta)** dans les préférences de l'extension.
+
+<p align="center">
+    <img src="screenshots/01-lemonde.png" width="400" alt="Boutons sur Le Monde">
+    <img src="screenshots/16-ouestfrance.png" width="400" alt="Boutons sur Ouest-France">
+</p>
+
+Journaux pris en charge : Challenges, Courrier international, L'Express, L'Humanité, L'Obs, L'Opinion, La Croix, La Dépêche du Midi, La Tribune, La Voix du Nord, Le Figaro, Le Monde, Le Monde diplomatique, Le Parisien, Le Télégramme, Les Échos, Libération, Nice-Matin, Ouest-France, Sciences et Avenir, Sud Ouest et Télérama. D'autres captures sont dans le dossier [`screenshots`](screenshots).
+
+Le texte vient uniquement d'Europresse, et un article peut ne pas y être encore, ou n'y être qu'en partie : le bouton **Élargir la recherche** essaie alors d'autres recherches.
+
 ## Partenaires Europresse supportés
 
 L'extension supporte la majorité des portails universitaires, mais aussi d'autres partenaires d'Europresse.
